@@ -40,13 +40,17 @@ void setup()
 
 	if (u16Result != ERR_NO_ERROR_D)
 	{
-		if (u16Result == ERR_CONFIG_FILE_EMPTY_D)
+        /* Start configuration webpage if configuration file does not exist or is not possible to read file */
+		if ((u16Result == ERR_CONFIG_FILE_EMPTY_D) || (u16Result == ERR_FILE_OPEN_ERROR_D))
 		{
 			/* TODO: Run config site with default ACCESS point */
+
+            /* TODO: make software reset when device after configuration is done */
+            ESP.restart();
 		}
 		else
 		{
-
+            /* Make software reset of device */
 #if _DEBUG
 			Serial.println("Do software reset !!!!");
 			delay(1000);
@@ -55,8 +59,8 @@ void setup()
 		}
 	}
 
-	pinMode(GPIO_BLUE_LED_PIN_D, OUTPUT);
-	digitalWrite(GPIO_BLUE_LED_PIN_D, LOW);
+	// pinMode(GPIO_BLUE_LED_PIN_D, OUTPUT);
+	// digitalWrite(GPIO_BLUE_LED_PIN_D, LOW);
 
 	/* Configure voltage cut-off mosfet pin as output - High */
 	//pinMode(CUT_OFF_MOSFET_PIN, OUTPUT);
