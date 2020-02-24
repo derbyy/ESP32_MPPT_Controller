@@ -151,91 +151,182 @@ uint16_t pal_fs_u16GetCredentials(const char* path, Config_T* pCredentials)
 	return u16Result;
 }
 
+/********************************************************************
+* Parameters		:       const char*							    *
+*							uint8_t									*
+* Return value		:		void								    *
+* Description		:		Function used to list directories in 	*
+* 							SPIFFS									*
+/********************************************************************/
 void listDir(const char* dirname, uint8_t levels) 
 {
+#if _DEBUG
 	Serial.printf("Listing directory: %s\r\n", dirname);
+#endif
 
 	File root = SPIFFS.open(dirname);
 	if (!root) 
 	{
+#if _DEBUG
 		Serial.println("- failed to open directory");
+#endif		
 		return;
 	}
-	if (!root.isDirectory()) {
+	if (!root.isDirectory()) 
+	{
+#if _DEBUG
 		Serial.println(" - not a directory");
+#endif		
 		return;
 	}
 
 	File file = root.openNextFile();
-	while (file) {
-		if (file.isDirectory()) {
+	while (file) 
+	{
+		if (file.isDirectory()) 
+		{
+#if _DEBUG
 			Serial.print("  DIR : ");
 			Serial.println(file.name());
+#endif			
 			if (levels) 
 			{
 				listDir(file.name(), levels - 1);
 			}
 		}
-		else {
+		else 
+		{
+#if _DEBUG			
 			Serial.print("  FILE: ");
 			Serial.print(file.name());
 			Serial.print("\tSIZE: ");
 			Serial.println(file.size());
+#endif			
 		}
 		file = root.openNextFile();
 	}
 }
 
-
-
-void writeFile(fs::FS& fs, const char* path, const char* message) {
+/********************************************************************
+* Parameters		:       FS&										*
+*							const char*							    *
+*							const char*								*
+* Return value		:		void								    *
+* Description		:		Function used to write text into the 	*
+*							file									*
+/********************************************************************/
+void writeFile(fs::FS& fs, const char* path, const char* message) 
+{
+#if _DEBUG	
 	Serial.printf("Writing file: %s\r\n", path);
+#endif
 
 	File file = fs.open(path, FILE_WRITE);
-	if (!file) {
+	if (!file) 
+	{
+#if _DEBUG
 		Serial.println("- failed to open file for writing");
+#endif
 		return;
-	}
-	if (file.print(message)) {
+	}	
+	if (file.print(message)) 
+	{
+#if _DEBUG
 		Serial.println("- file written");
+#endif
 	}
-	else {
+	else 
+	{
+#if _DEBUG
 		Serial.println("- frite failed");
+#endif
 	}
 }
 
-void appendFile(fs::FS& fs, const char* path, const char* message) {
+/********************************************************************
+* Parameters		:       FS&										*
+*							const char*							    *
+*							const char*								*
+* Return value		:		void								    *
+* Description		:		Function used to append text into the 	*
+*							file									*
+/********************************************************************/
+void appendFile(fs::FS& fs, const char* path, const char* message) 
+{
+#if _DEBUG	
 	Serial.printf("Appending to file: %s\r\n", path);
+#endif
 
 	File file = fs.open(path, FILE_APPEND);
-	if (!file) {
+	if (!file) 
+	{
+#if _DEBUG		
 		Serial.println("- failed to open file for appending");
+#endif
 		return;
 	}
-	if (file.print(message)) {
+	if (file.print(message)) 
+	{
+#if _DEBUG
 		Serial.println("- message appended");
+#endif
 	}
-	else {
+	else 
+	{
+#if _DEBUG
 		Serial.println("- append failed");
+#endif
 	}
 }
 
-void renameFile(fs::FS& fs, const char* path1, const char* path2) {
+/********************************************************************
+* Parameters		:       FS&										*
+*							const char*							    *
+*							const char*								*
+* Return value		:		void								    *
+* Description		:		Function used to rename file		 	*
+/********************************************************************/
+void renameFile(fs::FS& fs, const char* path1, const char* path2) 
+{
+#if _DEBUG
 	Serial.printf("Renaming file %s to %s\r\n", path1, path2);
-	if (fs.rename(path1, path2)) {
+#endif
+	if (fs.rename(path1, path2))
+	{
+#if _DEBUG		
 		Serial.println("- file renamed");
+#endif
 	}
-	else {
+	else 
+	{
+#if _DEBUG
 		Serial.println("- rename failed");
+#endif
 	}
 }
 
-void deleteFile(fs::FS& fs, const char* path) {
+/********************************************************************
+* Parameters		:       FS&										*
+*							const char*							    *
+* Return value		:		void								    *
+* Description		:		Function used to delete file		 	*
+/********************************************************************/
+void deleteFile(fs::FS& fs, const char* path) 
+{
+#if _DEBUG	
 	Serial.printf("Deleting file: %s\r\n", path);
-	if (fs.remove(path)) {
+#endif
+
+	if (fs.remove(path)) 
+	{
+#if _DEBUG
 		Serial.println("- file deleted");
+#endif
 	}
-	else {
+	else 
+	{
+#if _DEBUG
 		Serial.println("- delete failed");
+#endif
 	}
 }

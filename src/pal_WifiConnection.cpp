@@ -9,7 +9,6 @@
 uint16_t pal_wifi_u16ConnectToWifi(Config_T pCredentials)
 {
 	uint16_t u16Result;
-	uint8_t u8AttemptCount = 0u;
 
 #if _DEBUG
 	Serial.println("Connecting to local wifi network");
