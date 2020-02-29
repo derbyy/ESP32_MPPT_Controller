@@ -61,70 +61,67 @@
         text-align: center;
         }
 
-        /*the container must be positioned relative:*/
-        .custom-select {
-          position: relative;
-          font-family: Arial;
+        select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        -ms-appearance: none;
+        appearance: none;
+        outline: 0;
+        box-shadow: none;
+        border: 0 !important;
+        background: #4CAF50;
+        background-image: none;
+        }
+        /* Remove IE arrow */
+        select::-ms-expand {
+        display: none;
+        }
+        /* Custom Select */
+        .select {
+        position: relative;
+        display: flex;
+        width: 20em;
+        height: 3em;
+        line-height: 3;
+        background: #4CAF50;
+        overflow: hidden;
+        border-radius: .25em;
         }
 
-        .custom-select select {
-          display: none; /*hide original SELECT element:*/
+        select {
+        flex: 1;
+        padding: 0 .5em;
+        color: #fff;
+        cursor: pointer;
         }
 
-        .select-selected {
-          background-color: #4CAF50;
+        /* Arrow */
+        .select::after {
+        content: '\25BC';
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0 1em;
+        background: #4CAF50;
+        cursor: pointer;
+        pointer-events: none;
+        -webkit-transition: .25s all ease;
+        -o-transition: .25s all ease;
+        transition: .25s all ease;
         }
 
-        /*style the arrow inside the select element:*/
-        .select-selected:after {
-          position: absolute;
-          content: "";
-          top: 14px;
-          right: 10px;
-          width: 0;
-          height: 0;
-          border: 6px solid transparent;
-          border-color: #fff transparent transparent transparent;
+        /* Transition */
+        .select:hover::after {
+        color: #ffff;
         }
 
-        /*point the arrow upwards when the select box is open (active):*/
-        .select-selected.select-arrow-active:after {
-          border-color: transparent transparent #fff transparent;
-          top: 7px;
-        }
 
-        /*style the items (options), including the selected item:*/
-        .select-items div,.select-selected {
-          color: #ffffff;
-          padding: 8px 16px;
-          border: 1px solid transparent;
-          border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
-          cursor: pointer;
-          user-select: none;
-        }
-
-        /*style items (options):*/
-        .select-items {
-          position: absolute;
-          background-color: #4CAF50;
-          top: 100%;
-          left: 0;
-          right: 0;
-          z-index: 99;
-        }
-
-        /*hide the items when the select box is closed:*/
-        .select-hide {
-          display: none;
-        }
-
-        .select-items div:hover, .same-as-selected {
-          background-color: rgba(0, 0, 0, 0.1);
-        }
+        
     </style>
   </head>
 
   <body>
+    <script src="jquery-3.3.1.min.js"></script>
     <div class="container">
         <h1>ESP32 MPPT Controller configuration site</h1>
         <p>Please fill in your Wifi configuration and select time zone.</p>
@@ -134,167 +131,87 @@
         <label for="pass_label"><b>Password</b></label>
         <input type="password" id="pass_box" value="password">
         <hr>
-          <label for="timezone_label"><b>Timezone</b></label>
-        <!--surround the select box with a "custom-select" DIV element. Remember to set the width:-->
-          <div class="custom-select" style="width:200px;" id="dropdown">
-            <select>
-              <option value="0">Select timezone:</option>
-              <option value="1">Worldwide</option>
-              <option value="2">Asia</option>
-              <option value="3">Europe</option>
-              <option value="4">North America</option>
-              <option value="5">Oceania</option>
-              <option value="6">South America</option>
-            </select>
-          </div>
-      </div>
+          <label for="timezone_label"><b>Timezone</b></label>     
+    </div>
+    <div class="select">
+        <select name="slct" id="slct">
+          <option selected disabled>Choose an option</option>
+          <option value="europe.pool.ntp.org">Europe</option>
+          <option value="asia.pool.ntp.org">Asia</option>
+          <option value="north-america.pool.ntp.org">North America</option>
+          <option value="south-america.pool.ntp.org">South America</option>
+          <option value="oceania.pool.ntp.org">Oceania</option>
+          <option value="africa.pool.ntp.org">Africa</option>
+        </select>
+    </div>
+    <button type="button" class="savebtn" onclick="saveConfig(this)">Save Configuration</button>
 
-      <button type="button" class="savebtn" onclick="save_config(this)">Save Configuration</button>
+      
 
     <script>
-      var x, i, j, selElmnt, a, b, c;
-
-      /*look for any elements with the class "custom-select":*/
-      x = document.getElementsByClassName("custom-select");
-      for (i = 0; i < x.length; i++) 
-      {
-        selElmnt = x[i].getElementsByTagName("select")[0];
-        /*for each element, create a new DIV that will act as the selected item:*/
-        a = document.createElement("DIV");
-        a.setAttribute("class", "select-selected");
-        a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
-        x[i].appendChild(a);
-        /*for each element, create a new DIV that will contain the option list:*/
-        b = document.createElement("DIV");
-        b.setAttribute("class", "select-items select-hide");
-        for (j = 1; j < selElmnt.length; j++) 
+        function saveConfig(e)
         {
-          /*for each option in the original select element,
-          create a new DIV that will act as an option item:*/
-          c = document.createElement("DIV");
-          c.innerHTML = selElmnt.options[j].innerHTML;
-          c.addEventListener("click", function(e) {
-              /*when an item is clicked, update the original select box,
-              and the selected item:*/
-              var y, i, k, s, h;
-              s = this.parentNode.parentNode.getElementsByTagName("select")[0];
-              h = this.parentNode.previousSibling;
-              for (i = 0; i < s.length; i++) 
-              {
-                if (s.options[i].innerHTML == this.innerHTML) 
+            var myJSON, jsonObj;
+
+            /* Load JSON file */
+            $.getJSON("./cfg.json", function(json) {
+                console.log("JSON Data received, name is " + json.name);
+            });
+
+
+            /* Get text from SSID textbox */
+            var ssid_item = document.getElementById("ssid_box").value;
+            console.log(ssid_item);
+
+            /* Get text from Password textbox */
+            var pass_item = document.getElementById("pass_box").value;
+            console.log(pass_item);
+
+            /* Get text from drop down menu - time zone */
+            var timezone_item = document.getElementById("slct").value;
+            console.log(timezone_item);
+
+            /* Fill JSON structure */
+            jsonObj = {ssid: ssid_item, password: pass_item, time_zone: timezone_item};
+            myJSON = JSON.stringify(jsonObj);
+
+            /* Save json file */
+            localStorage.setItem("cfg.json", myJSON);
+
+            //download(myJSON, "cfg.json", 'text/plain');
+        }
+
+        function readTextFile(file)
+        {
+            var rawFile = new createCORSRequest();
+            rawFile.open("GET", file, false);
+            rawFile.onreadystatechange = function ()
+            {
+                if(rawFile.readyState === 4)
                 {
-                  s.selectedIndex = i;
-                  h.innerHTML = this.innerHTML;
-                  y = this.parentNode.getElementsByClassName("same-as-selected");
-                  for (k = 0; k < y.length; k++) 
-                  {
-                    y[k].removeAttribute("class");
-                  }
-                  this.setAttribute("class", "same-as-selected");
-                  break;
+                    if(rawFile.status === 200 || rawFile.status == 0)
+                    {
+                        var allText = rawFile.responseText;
+                        alert(allText);
+                    }
                 }
-              }
-              h.click();
-
-              /* Save dropbox names */
-              saveDropboxName(s);
-          });
-          b.appendChild(c);
+            }
+            rawFile.send(null);
         }
-        x[i].appendChild(b);
-        a.addEventListener("click", function(e) {
-            /*when the select box is clicked, close any other select boxes,
-            and open/close the current select box:*/
-            e.stopPropagation();
-            closeAllSelect(this);
-            this.nextSibling.classList.toggle("select-hide");
-            this.classList.toggle("select-arrow-active");
-          });
-      }
 
-      function closeAllSelect(elmnt) 
-      {
-        /*a function that will close all select boxes in the document,
-        except the current select box:*/
-        var x, y, i, arrNo = [];
-        x = document.getElementsByClassName("select-items");
-        y = document.getElementsByClassName("select-selected");
-        console.log(y);
-        for (i = 0; i < y.length; i++) 
+        function loadConfig()
         {
-          if (elmnt == y[i]) 
-          {
-            arrNo.push(i)
-          } else 
-          {
-            y[i].classList.remove("select-arrow-active");
-          }
+            var fileSystem = require('fs');
         }
-        for (i = 0; i < x.length; i++) 
+
+        function download(content, fileName, contentType) 
         {
-          if (arrNo.indexOf(i)) 
-          {
-            x[i].classList.add("select-hide");
-          }
+            var a = document.createElement("a");
+            var file = new Blob([content], {type: contentType});
+            a.href = URL.createObjectURL(file);
+            a.download = fileName;
+            a.click();
         }
-      }
-      /*if the user clicks anywhere outside the select box,
-      then close all select boxes:*/
-      document.addEventListener("click", closeAllSelect);
-
-      var dropBoxItemNameList = [];
-      function save_config(e)
-      {
-          var myJSON, jsonObj;
-
-          /* Get text from SSID textbox */
-          var ssid_item = document.getElementById("ssid_box").value;
-          console.log(ssid_item);
-
-          /* Get text from Password textbox */
-          var pass_item = document.getElementById("pass_box").value;
-          console.log(pass_item);
-
-          /* Get text from drop down menu - time zone */
-          var dropboxItem = document.getElementById("dropdown");
-          var val = dropboxItem.options[dropboxItem.selectedIndex].value;
-          console.log(val);
-
-          /* Fill JSON structure */
-          jsonObj = {ssid: ssid_item, password: pass_item, time_zone: timezone_item};
-          myJSON = JSON.stringify(jsonObj);
-
-          /* Save json file */
-          localStorage.setItem("cfg.json", myJSON);
-      }
-
-
-      function saveDropboxName(s)
-      {
-        var pom;
-
-        for(idx = 0; idx < s.length; idx++)
-        {
-          switch(idx)
-          {
-            case 0:
-            default:
-            pom = "";
-            case 1:
-            pom = "asia.";
-            case 2:
-            pom = "europe."
-            case 3:
-            pom = "north-america.";
-            case 4:
-            pom = "oceania.";
-            case 5:
-            pom = "south-america.";
-          }
-          /* Add dropbox text into array */
-          dropBoxItemNameList[idx] = pom + "pool.ntp.org";
-        }
-      }
     </script>
   </body>
 </html>
