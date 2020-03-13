@@ -176,7 +176,18 @@
             myJSON = JSON.stringify(jsonObj);
 
             /* Save json file */
-            localStorage.setItem("cfg.json", myJSON);
+            //localStorage.setItem("cfg.json", myJSON);
+
+            const fs = require('fs');
+
+            fs.writeFile("cfg.json", jsonContent, 'utf8', function (err) {
+                if (err) {
+                    console.log("An error occured while writing JSON Object to File.");
+                    return console.log(err);
+                }
+            
+                console.log("JSON file has been saved.");
+            }); 
 
             //download(myJSON, "cfg.json", 'text/plain');
         }
@@ -201,7 +212,16 @@
 
         function loadConfig()
         {
-            var fileSystem = require('fs');
+            const fs = require('fs');
+
+            fs.writeFile("cfg.json", jsonContent, 'utf8', function (err) {
+                if (err) {
+                    console.log("An error occured while writing JSON Object to File.");
+                    return console.log(err);
+                }
+            
+                console.log("JSON file has been saved.");
+            }); 
         }
 
         function download(content, fileName, contentType) 
