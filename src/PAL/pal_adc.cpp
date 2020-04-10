@@ -107,6 +107,9 @@ uint16_t pal_adc_u16ReadVoltage(uint8_t u8AdcInput)
 
     /* Get average result */
     uint16_t u16AdcSampleAverage = u16AdcSamples / ADC_MAX_NUM_OF_SAMPLES_D;
+#if _DEBUG
+    //Serial.println("ADC value : " + String(u16AdcSampleAverage));
+#endif
 
     /* Recalculate average ADC sample to voltage in milivolts */
     u16Voltage_mV = pal_adc_u16CalculateVoltage_mV(u16AdcSampleAverage);
