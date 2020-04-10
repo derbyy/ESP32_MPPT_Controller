@@ -1,4 +1,4 @@
-#include "pal_wifi.h"
+#include "PAL/pal_wifi.h"
 
 /********************************************************************
 * Parameters		:       Config_T pCredentials                   *

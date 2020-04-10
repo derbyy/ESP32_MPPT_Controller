@@ -1,4 +1,4 @@
-#include "pal_adc.h"
+#include "PAL/pal_adc.h"
 
 /***************************** STATIC FUNCTIONS *******************************/
 /* Function used to recalculate ADC value to voltage in mV */
@@ -121,7 +121,7 @@ uint16_t pal_adc_u16ReadVoltage(uint8_t u8AdcInput)
     u16Voltage_mV = pal_adc_u16ApplyDividerCorrection(u16Voltage_mV);
 
 #if _DEBUG
-		Serial.println("final voltage: " + String(u16Voltage_mV));
+	//Serial.println("final voltage: " + String(u16Voltage_mV));
 #endif
 
     return u16Voltage_mV;
