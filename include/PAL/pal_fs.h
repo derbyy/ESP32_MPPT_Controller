@@ -12,8 +12,12 @@
 #include <Arduino.h>
 #include "FS.h"
 #include "SPIFFS.h"
-#include "pal_Defines.h"
+#include "pal_defines.h"
 #include "ArduinoJson.h"
+
+#define CONFIG_FILE_PATH_D					("/cfg.json")
+#define MAX_JSON_FILESIZE_D					(1024u)
+#define EMPTY_FILESIZE_D					(0u)
 
 /* Function used to initialize File system on ESP-32 hardware */
 extern uint16_t pal_fs_u16FileSystemInitialization(void);

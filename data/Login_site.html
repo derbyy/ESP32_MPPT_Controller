@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset = "utf-8" />
+    <title>Login_site</title>
+    <meta name="viewport"content="width=device-width, initial-scale=1.0">
+    <style>
+      
+        * {box-sizing: border-box}
+
+        /* Add padding to containers */
+        .container {
+        padding: 16px;
+        }
+
+        /* Full-width input fields */
+        input[type=text], input[type=password] {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+        }
+
+        input[type=text]:focus, input[type=password]:focus {
+        background-color: #ddd;
+        outline: none;
+        }
+
+        /* Overwrite default styles of hr */
+        hr {
+        border: 1px solid #f1f1f1;
+        margin-bottom: 25px;
+        }
+
+        /* Set a style for the submit/register button */
+        .savebtn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 16px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        opacity: 0.9;
+        }
+
+        .savebtn:hover {
+        opacity:1;
+        }
+
+        /* Add a blue text color to links */
+        a {
+        color: dodgerblue;
+        }
+
+        /* Set a grey background color and center the text of the "sign in" section */
+        .signin {
+        background-color: #f1f1f1;
+        text-align: center;
+        }
+
+        select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        -ms-appearance: none;
+        appearance: none;
+        outline: 0;
+        box-shadow: none;
+        border: 0 !important;
+        background: #4CAF50;
+        background-image: none;
+        }
+        /* Remove IE arrow */
+        select::-ms-expand {
+        display: none;
+        }
+        /* Custom Select */
+        .select {
+        position: relative;
+        display: flex;
+        width: 20em;
+        height: 3em;
+        line-height: 3;
+        background: #4CAF50;
+        overflow: hidden;
+        border-radius: .25em;
+        }
+
+        select {
+        flex: 1;
+        padding: 0 .5em;
+        color: #fff;
+        cursor: pointer;
+        }
+
+        /* Arrow */
+        .select::after {
+        content: '\25BC';
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0 1em;
+        background: #4CAF50;
+        cursor: pointer;
+        pointer-events: none;
+        -webkit-transition: .25s all ease;
+        -o-transition: .25s all ease;
+        transition: .25s all ease;
+        }
+
+        /* Transition */
+        .select:hover::after {
+        color: #ffff;
+        }
+
+
+        
+    </style>
+  </head>
+
+  <body>
+    <script src="jquery-3.3.1.min.js"></script>
+    <div class="container">
+        <h1>ESP32 MPPT Controller configuration site</h1>
+        <p>Please fill in your Wifi configuration and select time zone.</p>
+        <hr>   
+        <label for="ssid_label"><b>SSID</b></label>
+        <input type="text" id="ssid_box" value="ssid">
+        <label for="pass_label"><b>Password</b></label>
+        <input type="password" id="pass_box" value="password">
+        <hr>
+          <label for="timezone_label"><b>Timezone</b></label>     
+    </div>
+    <div class="select">
+        <select name="slct" id="slct">
+          <option selected disabled>Choose an option</option>
+          <option value="europe.pool.ntp.org">Europe</option>
+          <option value="asia.pool.ntp.org">Asia</option>
+          <option value="north-america.pool.ntp.org">North America</option>
+          <option value="south-america.pool.ntp.org">South America</option>
+          <option value="oceania.pool.ntp.org">Oceania</option>
+          <option value="africa.pool.ntp.org">Africa</option>
+        </select>
+    </div>
+    <button type="button" class="savebtn" onclick="saveConfig(this)">Save Configuration</button>
+
+      
+
+    <script>
+        function saveConfig(e)
+        {
+            var myJSON, jsonObj;
+
+            /* Load JSON file */
+            $.getJSON("./cfg.json", function(json) {
+                console.log("JSON Data received, name is " + json.name);
+            });
+
+
+            /* Get text from SSID textbox */
+            var ssid_item = document.getElementById("ssid_box").value;
+            console.log(ssid_item);
+
+            /* Get text from Password textbox */
+            var pass_item = document.getElementById("pass_box").value;
+            console.log(pass_item);
+
+            /* Get text from drop down menu - time zone */
+            var timezone_item = document.getElementById("slct").value;
+            console.log(timezone_item);
+
+            /* Fill JSON structure */
+            jsonObj = {ssid: ssid_item, password: pass_item, time_zone: timezone_item};
+            myJSON = JSON.stringify(jsonObj);
+
+            /* Save json file */
+            //localStorage.setItem("cfg.json", myJSON);
+
+            const fs = require('fs');
+
+            fs.writeFile("cfg.json", jsonContent, 'utf8', function (err) {
+                if (err) {
+                    console.log("An error occured while writing JSON Object to File.");
+                    return console.log(err);
+                }
+            
+                console.log("JSON file has been saved.");
+            }); 
+
+            //download(myJSON, "cfg.json", 'text/plain');
+        }
+
+        function readTextFile(file)
+        {
+            var rawFile = new createCORSRequest();
+            rawFile.open("GET", file, false);
+            rawFile.onreadystatechange = function ()
+            {
+                if(rawFile.readyState === 4)
+                {
+                    if(rawFile.status === 200 || rawFile.status == 0)
+                    {
+                        var allText = rawFile.responseText;
+                        alert(allText);
+                    }
+                }
+            }
+            rawFile.send(null);
+        }
+
+        function loadConfig()
+        {
+            const fs = require('fs');
+
+            fs.writeFile("cfg.json", jsonContent, 'utf8', function (err) {
+                if (err) {
+                    console.log("An error occured while writing JSON Object to File.");
+                    return console.log(err);
+                }
+            
+                console.log("JSON file has been saved.");
+            }); 
+        }
+
+        function download(content, fileName, contentType) 
+        {
+            var a = document.createElement("a");
+            var file = new Blob([content], {type: contentType});
+            a.href = URL.createObjectURL(file);
+            a.download = fileName;
+            a.click();
+        }
+    </script>
+  </body>
+</html>
