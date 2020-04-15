@@ -11,7 +11,9 @@
 /* Value defines value of minimal voltage of 25F capacitor bank to run MPPT tracking in mili Volts */
 #define APP_MPPT_CTRL_MIN_CAP_25F_VOLTAGE_D                           ((uint16_t)700)
 /* Value defines time to stabilize voltage after load was cut of from solar cell */
-#define APP_MPPT_CTRL_STABILIZE_TIME_D                                (25u)                                
+#define APP_MPPT_CTRL_STABILIZE_TIME_D                                (25u)
+/* Value defines time correction constant */
+#define APP_MPPT_CTRL_TIME_CORRECTION_D                               ((uint32_t)10u)                                
 
 /**********************************************************************************************/
 
@@ -19,16 +21,16 @@
 /* Structure to hold voltage values for mppt components */
 typedef struct
 {
-    uint16_t u16VoltageCap_10F_mV;
-    uint16_t u16VoltageCap_25F_mV;
+    uint16_t u16VoltageCap_5F_mV;
+    uint16_t u16VoltageCap_12_5F_mV;
     uint16_t u16MaxPowerPointVal;
 }MPPT_CTRL_VOLTAGE_T;
 
 /* Structure to hold switching times for charging mosfets */
 typedef struct 
 {
-   uint32_t u32SwitchTime_1;
-   uint32_t u32SwitchTime_2;
+   uint32_t u32SwitchTime_1_us;
+   uint32_t u32SwitchTime_2_us;
 }MPPT_CTRL_SWITCH_TIMES_T;
 
 /* Enumeration to describe switch time type */

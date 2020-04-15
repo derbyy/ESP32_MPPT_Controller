@@ -16,7 +16,7 @@
 #define GPIO_BLUE_LED_PIN_D					((uint8_t)2u)
 #define CUT_OFF_MOSFET_PIN_D				((uint8_t)27u)
 #define CHARGE_MOSFET_1_PIN_D				((uint8_t)25u)
-#define CHARGE_MOSFET_2_PIN_D				((uint8_t)26u)
+#define CHARGE_MOSFET_2_PIN_D				((uint8_t)26u)          //26
 /* TODO Change name of define */
 #define CAPACITOR_1_VOLTAGE_PIN_D			((uint8_t)15u)
 /* TODO Change name of define */

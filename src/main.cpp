@@ -7,12 +7,16 @@
 #include "PAL/pal_defines.h"
 #include "PAL/pal_adc.h"
 #include "app_mppt_ctrl.h"
+#include "driver/gpio.h"
+#include "driver/adc.h"
+#include "esp_adc_cal.h"
 
 
 /* Define variable to hold error state */
 static uint16_t u16Result = ERR_NO_ERROR_D;
 /* Initialize structure to store network credentials */
 static Config_T struct_Credentials;
+
 
 void setup() 
 {
@@ -58,7 +62,7 @@ void setup()
 // 		}
 // 	}
 
-    app_mppt_ctrl_vInitialize();
+    app_mppt_ctrl_vInitialize();    
 }
 
 void loop() 

@@ -48,21 +48,25 @@ static uint16_t pal_adc_u16CalculateVoltage_mV(uint16_t u16InputSample)
 /******************************************************************************/
 static uint16_t pal_adc_u16ApplyCorrection(uint16_t u16InputValue_mV)
 {
-    const uint16_t au16CorrectionTable[] = {23u, 2u, 20u, 22u};
+    const uint16_t au16CorrectionTable[] = {60u ,23u, 2u, 20u, 22u};
     uint16_t u16CorrectedValue;
 
     /* Correct values */
-    if((u16InputValue_mV >= 120u) && (u16InputValue_mV < 400u))
+    if(u16InputValue_mV == 0u)
     {
-        u16CorrectedValue = u16InputValue_mV + au16CorrectionTable[0];
+        u16CorrectedValue = au16CorrectionTable[0];
+    }
+    else if((u16InputValue_mV >= 120u) && (u16InputValue_mV < 400u))
+    {
+        u16CorrectedValue = u16InputValue_mV + au16CorrectionTable[1];
     }
     else if((u16InputValue_mV >= 2000u) && (u16InputValue_mV < 2900u))
     {
-        u16CorrectedValue = u16InputValue_mV + au16CorrectionTable[2];
+        u16CorrectedValue = u16InputValue_mV + au16CorrectionTable[3];
     }
     else if((u16InputValue_mV >= 2900u) && (u16InputValue_mV < 3150u))
     {
-        u16CorrectedValue = u16InputValue_mV - au16CorrectionTable[3];
+        u16CorrectedValue = u16InputValue_mV - au16CorrectionTable[4];
     }
     else
     {
